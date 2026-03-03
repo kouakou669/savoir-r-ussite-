@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Profil — {{ profile_user['display_name'] }} — {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h1 class="h3 mb-1">@{{ profile_user['display_name'] }}</h1>
+    <div class="text-muted small">Membre depuis {{ profile_user['created_at'] }}</div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header fw-semibold">Sujets récents</div>
+      <div class="list-group list-group-flush">
+        {% if topics|length == 0 %}
+          <div class="list-group-item text-muted">Aucun sujet.</div>
+        {% endif %}
+        {% for t in topics %}
+          <a class="list-group-item list-group-item-action" href="{{ url_for('topic', topic_id=t['id']) }}">
+            <div class="d-flex justify-content-between">
+              <div>{{ t['title'] }}</div>
+              <small class="text-muted">{{ t['created_at'] }}</small>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header fw-semibold">Réponses récentes</div>
+      <div class="list-group list-group-flush">
+        {% if replies|length == 0 %}
+          <div class="list-group-item text-muted">Aucune réponse.</div>
+        {% endif %}
+        {% for r in replies %}
+          <a class="list-group-item list-group-item-action" href="{{ url_for('topic', topic_id=r['topic_id']) }}">
+            <div class="d-flex justify-content-between">
+              <div>Sur: {{ r['topic_title'] }}</div>
+              <small class="text-muted">{{ r['created_at'] }}</small>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

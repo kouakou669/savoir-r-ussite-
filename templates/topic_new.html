@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Créer un sujet — {{ app_name }}{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">Créer un sujet</h1>
+
+<form class="card card-body" method="post" action="{{ url_for('new_topic') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+
+  <div class="mb-3">
+    <label class="form-label">Titre</label>
+    <input class="form-control" name="title" placeholder="Ex: Comment mieux apprendre chaque jour ?" required />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Description / Question</label>
+    <textarea class="form-control" name="body" rows="7" placeholder="Explique ton sujet, ton contexte, et ce que tu attends…" required></textarea>
+  </div>
+
+  <div class="row g-2">
+    <div class="col-md-6">
+      <label class="form-label">Catégorie (optionnel)</label>
+      <input class="form-control" name="category" placeholder="Ex: Motivation, Business, Études…" />
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Tags (optionnel)</label>
+      <input class="form-control" name="tags" placeholder="Ex: discipline, argent, concentration" />
+      <div class="form-text">Sépare les tags par des virgules.</div>
+    </div>
+  </div>
+
+  <div class="mt-3 d-flex gap-2">
+    <button class="btn btn-primary">Publier</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('index') }}">Annuler</a>
+  </div>
+</form>
+{% endblock %}

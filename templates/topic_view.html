@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ topic['title'] }} — {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-2">
+    <div>
+      <h1 class="h3 mb-1">{{ topic['title'] }}</h1>
+      <div class="text-muted small">Par <a href="{{ url_for('profile', user_id=topic['author_id']) }}">{{ topic['display_name'] }}</a> • {{ topic['created_at'] }}{% if topic['category'] %} • <span class="badge text-bg-secondary">{{ topic['category'] }}</span>{% endif %} • {{ topic['views'] }} vues</div>
+      {% if topic['tags'] %}
+        <div class="mt-2">
+          {% for tag in topic['tags'].split(',') %}
+            {% set t = tag.strip() %}
+            {% if t %}<span class="badge text-bg-light border">#{{ t }}</span>{% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="d-flex gap-2">
+      {% if current_user.is_authenticated %}
+        {% if is_following %}
+          <form method="post" action="{{ url_for('unfollow_topic', topic_id=topic['id']) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <button class="btn btn-outline-secondary btn-sm">Ne plus suivre</button>
+          </form>
+        {% else %}
+          <form method="post" action="{{ url_for('follow_topic', topic_id=topic['id']) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <button class="btn btn-outline-primary btn-sm">Suivre</button>
+          </form>
+        {% endif %}
+      {% endif %}
+
+      <button class="btn btn-sm btn-outline-dark" type="button" onclick="copyToClipboard(window.location.href)">Copier le lien</button>
+      <a class="btn btn-sm btn-outline-success" target="_blank" href="https://wa.me/?text={{ (topic['title'] ~ ' — ' ~ request.url)|urlencode }}">Partager WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body mb-4">
+  <div class="topic-body">{{ topic['body']|e|replace('\n','<br>')|safe }}</div>
+</div>
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+  <h2 class="h5 mb-0">Réponses ({{ replies|length }})</h2>
+  <a class="btn btn-sm btn-outline-secondary" href="#repondre">Répondre</a>
+</div>
+
+{% if replies|length == 0 %}
+  <div class="alert alert-info">Aucune réponse pour le moment. Sois le premier à répondre.</div>
+{% endif %}
+
+{% for r in replies %}
+  <div class="card mb-3" id="reply-{{ r['id'] }}">
+    <div class="card-body">
+      <div class="d-flex justify-content-between">
+        <div class="small text-muted">Réponse par <a href="{{ url_for('profile', user_id=r['user_id']) }}">{{ r['display_name'] }}</a> • {{ r['created_at'] }}</div>
+        <div class="small text-muted">#{{ r['id'] }}</div>
+      </div>
+      <div class="mt-2 reply-body">{{ r['body']|e|replace('\n','<br>')|safe }}</div>
+
+      <hr class="my-3" />
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="fw-semibold">Critiques / Commentaires</div>
+        {% if current_user.is_authenticated %}
+          <a class="small" href="#comment-{{ r['id'] }}">Ajouter</a>
+        {% else %}
+          <a class="small" href="{{ url_for('login') }}">Se connecter pour commenter</a>
+        {% endif %}
+      </div>
+
+      {% set comments = comments_by_reply.get(r['id'], []) %}
+      {% if comments|length == 0 %}
+        <div class="text-muted small mt-2">Pas encore de critique/commentaire.</div>
+      {% else %}
+        <div class="mt-2">
+          {% for c in comments %}
+            <div class="comment-box">
+              <div class="small text-muted">{{ c['display_name'] }} • {{ c['created_at'] }}</div>
+              <div>{{ c['body']|e|replace('\n','<br>')|safe }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if current_user.is_authenticated %}
+        <form class="mt-3" method="post" action="{{ url_for('add_comment', reply_id=r['id']) }}" id="comment-{{ r['id'] }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <div class="row g-2 align-items-end">
+            <div class="col-md-10">
+              <label class="form-label small mb-1">Ta critique / commentaire</label>
+              <input class="form-control" name="body" placeholder="Ex: Bonne idée, mais tu peux ajouter des étapes…" required />
+            </div>
+            <div class="col-md-2 d-grid">
+              <button class="btn btn-outline-primary">Publier</button>
+            </div>
+          </div>
+        </form>
+      {% endif %}
+
+    </div>
+  </div>
+{% endfor %}
+
+<div class="card" id="repondre">
+  <div class="card-body">
+    <h3 class="h5">Répondre</h3>
+
+    {% if current_user.is_authenticated %}
+      <form method="post" action="{{ url_for('add_reply', topic_id=topic['id']) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <div class="mb-2">
+          <textarea class="form-control" name="body" rows="5" placeholder="Écris ta réponse…" required></textarea>
+        </div>
+        <button class="btn btn-primary">Publier la réponse</button>
+        <div class="form-text">L'auteur et les abonnés recevront un email (si activé).</div>
+      </form>
+    {% else %}
+      <div class="alert alert-warning mb-0">Tu dois <a href="{{ url_for('login') }}">te connecter</a> pour répondre.</div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
