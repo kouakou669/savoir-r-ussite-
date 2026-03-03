@@ -1,0 +1,16 @@
+{% extends "emails/_base.html" %}
+
+{% block email_content %}
+  <p>Bonjour {{ topic['author_name'] }},</p>
+  <p>Quelqu'un vient de répondre à ton sujet :</p>
+  <p style="font-weight:bold;">{{ topic['title'] }}</p>
+
+  <div style="border:1px solid #eee; padding:12px; border-radius:8px; background:#fafafa;">
+    <div style="color:#555; font-size:12px;">Réponse de <strong>{{ reply['replier_name'] }}</strong></div>
+    <div style="margin-top:8px;">{{ reply['body']|e|replace('\n','<br>')|safe }}</div>
+  </div>
+
+  <p style="margin-top:12px;">
+    <a href="{{ link }}" style="display:inline-block; padding:10px 14px; background:#0d6efd; color:#fff; text-decoration:none; border-radius:6px;">Voir la discussion</a>
+  </p>
+{% endblock %}

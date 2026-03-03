@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ subject or 'Notification' }}</title>
+</head>
+<body style="font-family:Arial, sans-serif; line-height:1.4;">
+  <div style="max-width:720px; margin:0 auto; padding:16px;">
+    <div style="border-bottom:1px solid #eee; padding-bottom:12px; margin-bottom:12px;">
+      <div style="font-weight:bold; font-size:18px;">Savoir &amp; Réussite</div>
+      <div style="color:#666; font-size:12px;">Communauté de conversation, sujets, réponses et critiques.</div>
+    </div>
+
+    {% block email_content %}{% endblock %}
+
+    <div style="border-top:1px solid #eee; padding-top:12px; margin-top:16px; color:#777; font-size:12px;">
+      <div>Tu reçois cet email car tu as des notifications activées.</div>
+      <div>Tu peux modifier tes préférences dans les réglages du site.</div>
+    </div>
+  </div>
+</body>
+</html>
