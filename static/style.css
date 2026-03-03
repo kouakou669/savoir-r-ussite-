@@ -1,0 +1,20 @@
+.topic-excerpt {
+  color: #222;
+}
+
+.topic-body, .reply-body {
+  white-space: normal;
+}
+
+.comment-box {
+  border-left: 3px solid #ddd;
+  padding: 8px 10px;
+  margin-top: 8px;
+  background: #fcfcfc;
+}
+
+@media (max-width: 576px) {
+  .comment-box {
+    padding: 10px;
+  }
+}
