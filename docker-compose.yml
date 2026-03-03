@@ -1,0 +1,18 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      APP_BASE_URL: "http://localhost:8000"
+      SECRET_KEY: "change-moi-en-production"
+      # --- SMTP (optionnel) ---
+      # SMTP_HOST: "smtp.gmail.com"
+      # SMTP_PORT: "587"
+      # SMTP_USE_TLS: "1"
+      # SMTP_USER: "tonadresse@gmail.com"
+      # SMTP_PASS: "mot_de_passe_application"
+      # SMTP_FROM_NAME: "Savoir & Réussite"
+      # SMTP_FROM_EMAIL: "tonadresse@gmail.com"
+    volumes:
+      - ./instance:/app/instance
