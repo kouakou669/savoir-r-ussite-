@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Erreur serveur — {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger">
+  <h1 class="h4">Erreur serveur</h1>
+  <div>Une erreur s'est produite. Réessayez plus tard.</div>
+</div>
+<a class="btn btn-outline-secondary" href="{{ url_for('index') }}">Retour</a>
+{% endblock %}
